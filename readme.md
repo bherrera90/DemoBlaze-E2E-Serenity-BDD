@@ -1,7 +1,10 @@
-================================================================================
-  DemoBlaze E2E — Serenity BDD + Screenplay + Cucumber
-  Instrucciones paso a paso de ejecución
-================================================================================
+# DemoBlaze E2E — Serenity BDD + Screenplay + Cucumber
+
+Instrucciones paso a paso de ejecución.
+
+[![E2E · DemoBlaze (Serenity BDD)](https://github.com/TU_USUARIO/TU_REPO/actions/workflows/e2e-demoblaze.yml/badge.svg)](https://github.com/Bherrera90/DemoBlaze-E2E-Serenidad-BDD/actions/workflows/e2e-demoblaze.yml)
+
+Sustituye `Bherrera90` y `DemoBlaze-E2E-Serenidad-BDD` en la URL del *badge* por tu organización o usuario y el nombre del repositorio en GitHub (o elimina la línea del badge si aún no has publicado el repo).
 
 1. Requisitos previos
    -------------------
@@ -15,7 +18,7 @@
 2. Obtener el código
    --------------------
    a) Clonar el repositorio público de GitHub (sustituya la URL por la de su repo):
-        git clone <URL_DEL_REPOSITORIO>
+        git clone <https://github.com/bherrera90/DemoBlaze-E2E-Serenity-BDD.git>
    b) Entrar al directorio del proyecto:
         cd ejercicio1-serenity-bdd
 
@@ -53,27 +56,30 @@
       reportes/cucumber si el script la copió).
    c) Hacer commit de la carpeta reportes/ según las indicaciones de su curso.
 
-7. Subir a GitHub (repositorio público)
-   -------------------------------------
-   a) Crear un repositorio nuevo en GitHub y marcarlo como público.
-   b) En la raíz del proyecto (si aún no hay git):
-        git init
-        git add .
-        git commit -m "Entrega: framework Serenity BDD DemoBlaze"
-   c) Conectar el remoto y subir (sustituya USUARIO y REPO):
-        git remote add origin https://github.com/USUARIO/REPO.git
-        git branch -M main
-        git push -u origin main
 
-8. Qué debe contener el repositorio para reproducibilidad
+7. Qué debe contener el repositorio para reproducibilidad
    -------------------------------------------------------
    - pom.xml y código fuente bajo src/
    - Características Gherkin en src/test/resources/features/
    - serenity.conf y configuración de pruebas en src/test/resources/
-   - Este readme.txt y conclusiones.txt
+   - `readme.md` y `conclusiones.md`
    - scripts/ (ejecutar-pruebas.sh, copiar-reportes.sh)
    - Opcional pero recomendable si lo piden explícitamente: carpeta reportes/
      generada con el script del paso 6
+   - `.github/workflows/e2e-demoblaze.yml` (CI en GitHub Actions)
+
+8. CI con GitHub Actions
+   ----------------------
+   El repositorio incluye un workflow que ejecuta `mvn clean verify` en **Ubuntu**
+   con **Chrome en modo headless** (ya configurado en `serenity.conf`).
+
+   a) **Cuándo se ejecuta:** al hacer *push* o abrir/actualizar un *pull request*
+      hacia `main` o `master`, manualmente (*Actions* → *E2E · DemoBlaze* → *Run workflow*)
+      y de forma programada (lunes ~07:00 UTC, *smoke* semanal).
+   b) **Resultados:** en la pestaña *Actions* de GitHub; cada ejecución publica
+      artefactos descargables con el reporte Serenity y los reportes Cucumber.
+   c) **Requisito:** el código debe estar en GitHub; el *badge* del inicio de este
+      archivo solo mostrará estado correcto tras sustituir `Bherrera90`/`DemoBlaze-E2E-Serenidad-BDD`.
 
 9. Problemas frecuentes
    ---------------------

@@ -1,0 +1,85 @@
+# ═══════════════════════════════════════════════════════════════════════════
+#  CI: pruebas E2E DemoBlaze — Serenity BDD + Cucumber + Screenplay
+#  Ejecuta Maven (clean verify) en Ubuntu con Chrome headless (ver serenity.conf)
+# ═══════════════════════════════════════════════════════════════════════════
+
+name: E2E · DemoBlaze (Serenity BDD)
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+  schedule:
+    # Smoke semanal: lunes 07:00 UTC (ajuste si necesita otra ventana)
+    - cron: "0 7 * * 1"
+
+concurrency:
+  group: e2e-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  MAVEN_OPTS: -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+
+jobs:
+  e2e:
+    name: Maven verify · Chrome headless
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar JDK 11 (Temurin) y caché de Maven
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "11"
+          cache: maven
+
+      - name: Ejecutar pruebas E2E
+        run: mvn -B -ntp clean verify
+
+      - name: Resumen para la pestaña Summary del workflow
+        if: always()
+        run: |
+          {
+            echo "## DemoBlaze E2E — Serenity BDD"
+            echo ""
+            echo "| Detalle | Valor |"
+            echo "|---------|--------|"
+            echo "| Rama / ref | \`${GITHUB_REF_NAME:-$GITHUB_REF}\` |"
+            echo "| Commit | [\`${GITHUB_SHA:0:7}\`](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA}) |"
+            echo "| Workflow | [\`${GITHUB_WORKFLOW}\`](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}) |"
+            echo ""
+            echo "### Reportes como artefactos"
+            echo ""
+            echo "Tras cada ejecución, descargue los artefactos de esta run y abra \`index.html\` dentro de la carpeta Serenity, o el HTML de Cucumber si lo generó el runner."
+            echo ""
+            echo "- **Serenity (Living Documentation):** \`target/site/serenity/index.html\`"
+            echo "- **Cucumber HTML:** \`target/cucumber-reports/cucumber-html-report.html\`"
+            echo ""
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Publicar reporte Serenity
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: serenity-living-documentation
+          path: target/site/serenity/
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Publicar reporte Cucumber (HTML + JSON)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cucumber-reports
+          path: target/cucumber-reports/
+          if-no-files-found: warn
+          retention-days: 14
