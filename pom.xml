@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ╔══════════════════════════════════════════════════════════════════════╗
+  ║  pom.xml - Ejercicio 1: Serenity BDD + Screenplay + Selenium         ║
+  ║                                                                      ║
+  ║  ¿QUÉ ES ESTE ARCHIVO?                                               ║
+  ║  Es el "cerebro del proyecto" para Maven. Define:                    ║
+  ║  - Qué librerías (dependencias) necesita el proyecto                 ║
+  ║  - Cómo se construye y ejecuta el proyecto                           ║
+  ║  - Qué versiones usar de cada herramienta                            ║
+  ║                                                                      ║
+  ║  ANALOGÍA: Es como la lista de ingredientes de una receta.           ║
+  ║  Sin esta lista, Maven no sabe qué descargar.                        ║
+  ╚══════════════════════════════════════════════════════════════════════╝
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!--  IDENTIFICADORES DEL PROYECTO                           -->
+    <!--  groupId: como el "apellido" del proyecto (tu empresa)  -->
+    <!--  artifactId: el "nombre" del proyecto                   -->
+    <!--  version: versión actual del proyecto                   -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <groupId>com.demoblaze.automation</groupId>
+    <artifactId>demoblaze-e2e-serenity</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+
+    <name>DemoBlaze E2E - Serenity BDD + Screenplay</name>
+    <description>
+        Framework de automatización E2E para DemoBlaze usando Serenity BDD
+        con patrón Screenplay, Cucumber y Selenium WebDriver.
+        Cubre el flujo completo de compra (agregar productos, carrito, checkout).
+    </description>
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!--  PROPIEDADES GLOBALES                                   -->
+    <!--  Son variables que puedes reutilizar en todo el POM.    -->
+    <!--  Cambiar la versión aquí la cambia en todos lados.     -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <properties>
+        <!-- Java 11 es LTS (Long-Term Support), estable para proyectos empresariales -->
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- Serenity BDD: framework principal de reportes + orquestación de pruebas -->
+        <!-- Versión 4.x es la más reciente y estable con soporte para Screenplay     -->
+        <serenity.version>4.1.20</serenity.version>
+
+        <!-- Cucumber BDD: permite escribir pruebas en lenguaje natural (Gherkin) -->
+        <cucumber.version>7.15.0</cucumber.version>
+
+        <!-- WebDriverManager: descarga automáticamente el driver del navegador -->
+        <!-- Sin esto tendrías que descargar chromedriver.exe manualmente        -->
+        <webdrivermanager.version>5.7.0</webdrivermanager.version>
+
+        <!-- Plugin de Maven para ejecutar las pruebas -->
+        <maven.failsafe.version>3.1.2</maven.failsafe.version>
+        <maven.surefire.version>3.1.2</maven.surefire.version>
+    </properties>
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!--  DEPENDENCIAS                                                       -->
+    <!--  Son las librerías externas que necesita tu proyecto.               -->
+    <!--  Maven las descarga automáticamente de internet (Maven Central).    -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <dependencies>
+
+        <!-- ─────────────────────────────────────────────────────── -->
+        <!--  SERENITY BDD CORE                                       -->
+        <!--  El corazón del framework. Genera los reportes HTML      -->
+        <!--  y gestiona el ciclo de vida de las pruebas.             -->
+        <!-- ─────────────────────────────────────────────────────── -->
+        <dependency>
+            <groupId>net.serenity-bdd</groupId>
+            <artifactId>serenity-core</artifactId>
+            <version>${serenity.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- ─────────────────────────────────────────────────────── -->
+        <!--  SERENITY SCREENPLAY                                     -->
+        <!--  Agrega el patrón de diseño Screenplay a Serenity.       -->
+        <!--  Actores, tareas, preguntas e interacciones.             -->
+        <!-- ─────────────────────────────────────────────────────── -->
+        <dependency>
+            <groupId>net.serenity-bdd</groupId>
+            <artifactId>serenity-screenplay</artifactId>
+            <version>${serenity.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- ─────────────────────────────────────────────────────── -->
+        <!--  SERENITY SCREENPLAY WEB                                 -->
+        <!--  Extiende Screenplay para interactuar con navegadores    -->
+        <!--  usando Selenium WebDriver.                              -->
+        <!-- ─────────────────────────────────────────────────────── -->
+        <dependency>
+            <groupId>net.serenity-bdd</groupId>
+            <artifactId>serenity-screenplay-webdriver</artifactId>
+            <version>${serenity.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- ─────────────────────────────────────────────────────── -->
+        <!--  SERENITY CUCUMBER                                       -->
+        <!--  Integra Serenity con Cucumber para que los archivos     -->
+        <!--  .feature se transformen en reportes enriquecidos.       -->
+        <!-- ─────────────────────────────────────────────────────── -->
+        <dependency>
+            <groupId>net.serenity-bdd</groupId>
+            <artifactId>serenity-cucumber</artifactId>
+            <version>${serenity.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- ─────────────────────────────────────────────────────── -->
+        <!--  CUCUMBER JAVA                                           -->
+        <!--  Permite anotar métodos Java con @Given, @When, @Then   -->
+        <!--  que Cucumber mapea a los pasos del archivo .feature.   -->
+        <!-- ─────────────────────────────────────────────────────── -->
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- ─────────────────────────────────────────────────────── -->
+        <!--  CUCUMBER JUNIT                                          -->
+        <!--  El puente entre JUnit (runner de pruebas de Java)      -->
+        <!--  y Cucumber. Permite ejecutar pruebas con @RunWith.     -->
+        <!-- ─────────────────────────────────────────────────────── -->
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-junit</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- ─────────────────────────────────────────────────────── -->
+        <!--  JUNIT 4                                                 -->
+        <!--  Framework de testing de Java. Serenity 4.x usa JUnit4  -->
+        <!--  como base para su runner.                               -->
+        <!-- ─────────────────────────────────────────────────────── -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- ─────────────────────────────────────────────────────── -->
+        <!--  WEBDRIVER MANAGER                                       -->
+        <!--  Descarga automáticamente el driver correcto para        -->
+        <!--  el navegador instalado en la máquina.                   -->
+        <!--  Sin esto: error "chromedriver not found"               -->
+        <!-- ─────────────────────────────────────────────────────── -->
+        <dependency>
+            <groupId>io.github.bonigarcia</groupId>
+            <artifactId>webdrivermanager</artifactId>
+            <version>${webdrivermanager.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- ─────────────────────────────────────────────────────── -->
+        <!--  ASSERTJ CORE                                            -->
+        <!--  Librería para escribir aserciones fluidas y legibles.   -->
+        <!--  Ej: assertThat(title).contains("Thanks")               -->
+        <!-- ─────────────────────────────────────────────────────── -->
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>3.25.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- ─────────────────────────────────────────────────────── -->
+        <!--  LOMBOK (OPCIONAL)                                       -->
+        <!--  Reduce boilerplate: genera getters/setters              -->
+        <!--  con anotaciones. Ej: @Builder, @Data, @Getter          -->
+        <!-- ─────────────────────────────────────────────────────── -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.30</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- ─────────────────────────────────────────────────────── -->
+        <!--  SLF4J + LOGBACK                                         -->
+        <!--  Sistema de logging para registrar mensajes en consola   -->
+        <!--  durante la ejecución de las pruebas.                    -->
+        <!-- ─────────────────────────────────────────────────────── -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.9</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.4.14</version>
+        </dependency>
+
+    </dependencies>
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!--  BUILD - PLUGINS                                                     -->
+    <!--  Herramientas que Maven usa para compilar, ejecutar y reportar.      -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <build>
+        <plugins>
+
+            <!-- ─────────────────────────────────────────────────────── -->
+            <!--  MAVEN COMPILER PLUGIN                                   -->
+            <!--  Le dice a Maven con qué versión de Java compilar.       -->
+            <!-- ─────────────────────────────────────────────────────── -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <source>11</source>
+                    <target>11</target>
+                    <encoding>UTF-8</encoding>
+                    <!-- Necesario para Lombok -->
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.30</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+
+            <!-- ─────────────────────────────────────────────────────── -->
+            <!--  MAVEN FAILSAFE PLUGIN                                   -->
+            <!--  Ejecuta las pruebas de integración (IT = Integration     -->
+            <!--  Tests). Es el que lanza los tests de Serenity.          -->
+            <!--  Diferencia con Surefire: Failsafe NO falla el build     -->
+            <!--  inmediatamente si hay test fallidos. Espera a generar   -->
+            <!--  los reportes primero.                                   -->
+            <!-- ─────────────────────────────────────────────────────── -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>${maven.failsafe.version}</version>
+                <configuration>
+                    <!-- Incluir clases que terminen en IT o Runner -->
+                    <includes>
+                        <include>**/*Runner.class</include>
+                        <include>**/*IT.class</include>
+                    </includes>
+                    <!-- Parámetros que pasan al sistema en tiempo de ejecución -->
+                    <systemPropertyVariables>
+                        <!-- Indica a Serenity qué driver usar (por defecto: chrome) -->
+                        <webdriver.driver>chrome</webdriver.driver>
+                    </systemPropertyVariables>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <!-- integration-test: ejecuta las pruebas -->
+                            <goal>integration-test</goal>
+                            <!-- verify: verifica los resultados -->
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- ─────────────────────────────────────────────────────── -->
+            <!--  SERENITY MAVEN PLUGIN                                   -->
+            <!--  El plugin oficial de Serenity para Maven.               -->
+            <!--  RESPONSABILIDAD: Generar el reporte HTML de Serenity    -->
+            <!--  al final de la ejecución de las pruebas.                -->
+            <!-- ─────────────────────────────────────────────────────── -->
+            <plugin>
+                <groupId>net.serenity-bdd.maven.plugins</groupId>
+                <artifactId>serenity-maven-plugin</artifactId>
+                <version>${serenity.version}</version>
+                <executions>
+                    <execution>
+                        <id>serenity-reports</id>
+                        <!-- post-integration-test: fase que ocurre DESPUÉS de los tests -->
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <!-- aggregate: consolida todos los resultados en un reporte -->
+                            <goal>aggregate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>

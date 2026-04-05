@@ -1,0 +1,32 @@
+<!--
+  logback-test.xml - Configuración de Logging para las Pruebas
+ 
+  ¿QUÉ ES ESTE ARCHIVO?
+  Controla qué mensajes de log se muestran en la consola cuando
+  ejecutas las pruebas. Los frameworks como Serenity y Selenium
+  generan MUCHOS mensajes; este archivo filtra los importantes.
+ 
+  NIVELES DE LOG (de menor a mayor severidad):
+    TRACE → DEBUG → INFO → WARN → ERROR
+    Si configuras INFO, verás INFO, WARN y ERROR.
+-->
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!-- Formato: [NIVEL] NombreClase - Mensaje -->
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Reducir verbosidad de librerías internas de Selenium -->
+    <logger name="org.openqa.selenium" level="WARN"/>
+    <logger name="io.github.bonigarcia" level="INFO"/>
+
+    <!-- Nuestro código de pruebas en nivel DEBUG para ver detalles -->
+    <logger name="com.demoblaze" level="DEBUG"/>
+
+    <!-- Nivel raíz: INFO para todo lo demás -->
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>
