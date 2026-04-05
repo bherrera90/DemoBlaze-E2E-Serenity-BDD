@@ -42,8 +42,18 @@ jobs:
           java-version: "11"
           cache: maven
 
-      - name: Ejecutar pruebas E2E
-        run: mvn -B -ntp clean verify
+      # 🔧 NUEVO: Instalar Google Chrome estable
+      - name: Instalar Google Chrome
+        run: |
+          wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+          sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
+          google-chrome --version
+
+      # 🔧 NUEVO: Pasar argumentos headless a Maven (o confiar en serenity.conf)
+      - name: Ejecutar pruebas E2E (headless)
+        run: mvn -B -ntp clean verify -Dheadless.mode=true
 
       - name: Resumen para la pestaña Summary del workflow
         if: always()
